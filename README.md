@@ -3,6 +3,8 @@ Search pip from the command-line by scraping the web interface.
 
 Avoids pretty TUI-ism. This is a CLI tool that you can pipe into other tools.
 
+Warning: this is vibe coded. But will become less so as I make changes.
+
 
 ## Motivation
 PyPI disabled search from the command-line because they could not be bothered to deal wit DDos and they are too poor (supposedly). They are begging for money now and I don't really want to see the begging when they say "python is for everyone" after having turned down grants because they want to discriminate based on gender and race. It's more complicated of course but it's all a bit rubbish.

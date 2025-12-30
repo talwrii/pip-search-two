@@ -9,7 +9,7 @@ description = "Search PyPI packages from the command-line by scraping the web in
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"},
+    {name = "@readwithai", email = "talwrii@gmail.com"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -32,9 +32,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/pip-search-two"
-Repository = "https://github.com/yourusername/pip-search-two"
-Issues = "https://github.com/yourusername/pip-search-two/issues"
+Homepage = "https://github.com/talwrii/pip-search-two"
+Repository = "https://github.com/talwrii/pip-search-two"
+Issues = "https://github.com/talwrii/pip-search-two/issues"
 
 [project.scripts]
 pip-search-two = "pip_search_two.main:main"
