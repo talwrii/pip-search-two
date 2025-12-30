@@ -1,35 +1,22 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = [ "setuptools>=61.0", "wheel",]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pip-search-two"
-version = "0.1.0"
+version = "1.0.0"
 description = "Search PyPI packages from the command-line by scraping the web interface"
 readme = "README.md"
-license = {text = "MIT"}
-authors = [
-    {name = "@readwithai", email = "talwrii@gmail.com"},
-]
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System :: Software Distribution",
-]
-keywords = ["pip", "pypi", "search", "packages", "command-line"]
+classifiers = [ "Development Status :: 4 - Beta", "Intended Audience :: Developers", "License :: OSI Approved :: MIT License", "Operating System :: OS Independent", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.8", "Programming Language :: Python :: 3.9", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Topic :: Software Development :: Libraries :: Python Modules", "Topic :: System :: Software Distribution",]
+keywords = [ "pip", "pypi", "search", "packages", "command-line",]
 requires-python = ">=3.8"
-dependencies = [
-    "requests>=2.25.0",
-]
+dependencies = [ "requests>=2.25.0",]
+[[project.authors]]
+name = "@readwithai"
+email = "talwrii@gmail.com"
+
+[project.license]
+text = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/talwrii/pip-search-two"
@@ -41,30 +28,25 @@ pip-search-two = "pip_search_two.main:main"
 pipsearch2 = "pip_search_two.main:main"
 
 [project.optional-dependencies]
-dev = [
-    "black",
-    "flake8",
-    "pytest",
-    "pytest-cov",
-]
+dev = [ "black", "flake8", "pytest", "pytest-cov",]
 
 [tool.setuptools]
-packages = ["pip_search_two"]
+packages = [ "pip_search_two",]
+
+[tool.black]
+line-length = 88
+target-version = [ "py38",]
+include = "\\.pyi?$"
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [ "E203", "W503",]
 
 [tool.setuptools.package-dir]
 pip_search_two = "pip_search_two"
 
-[tool.black]
-line-length = 88
-target-version = ['py38']
-include = '\.pyi?$'
-
-[tool.flake8]
-max-line-length = 88
-extend-ignore = ["E203", "W503"]
-
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
+testpaths = [ "tests",]
+python_files = [ "test_*.py",]
+python_classes = [ "Test*",]
+python_functions = [ "test_*",]
