@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
 Simple PyPI package search tool
-Usage: python pipsearch.py <search_term> [limit]
+Usage: python pipsearch.py <search_terms...> [-n COUNT]
 """
 
 import sys
 import requests
 import re
+import argparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
@@ -38,14 +39,36 @@ def search_packages(term):
         # Extract package names
         packages = re.findall(r'<a href="/simple/([^/]+)/">', response.text)
         
-        # Filter packages containing search term (case insensitive)
-        matches = [pkg for pkg in packages if term.lower() in pkg.lower()]
+        # Handle multiple search terms
+        search_words = term.lower().split()
         
-        # Sort: exact matches first, then alphabetical
+        if len(search_words) == 1:
+            # Single term: search for packages containing the term
+            matches = [pkg for pkg in packages if search_words[0] in pkg.lower()]
+        else:
+            # Multiple terms: search for packages containing any of the terms
+            matches = []
+            for pkg in packages:
+                pkg_lower = pkg.lower()
+                if any(word in pkg_lower for word in search_words):
+                    matches.append(pkg)
+        
+        # Sort: exact matches first, then matches with more terms, then alphabetical
         exact_matches = [pkg for pkg in matches if pkg.lower() == term.lower()]
-        partial_matches = [pkg for pkg in matches if pkg.lower() != term.lower()]
         
-        return exact_matches + sorted(partial_matches)
+        # For multi-term searches, prioritize packages that contain more of the terms
+        if len(search_words) > 1:
+            def match_score(pkg):
+                pkg_lower = pkg.lower()
+                score = sum(1 for word in search_words if word in pkg_lower)
+                return (-score, pkg.lower())  # Negative for reverse sort, then alphabetical
+            
+            partial_matches = [pkg for pkg in matches if pkg.lower() != term.lower()]
+            partial_matches.sort(key=match_score)
+        else:
+            partial_matches = sorted([pkg for pkg in matches if pkg.lower() != term.lower()])
+        
+        return exact_matches + partial_matches
     
     except Exception as e:
         print(f"Error searching packages: {e}")
@@ -53,17 +76,35 @@ def search_packages(term):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python pipsearch.py <search_term> [limit]")
-        print("Examples:")
-        print("  python pipsearch.py requests")
-        print("  python pipsearch.py django 20")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Search PyPI packages from the command line",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s requests
+  %(prog)s machine learning
+  %(prog)s web scraping -n 20
+  %(prog)s django rest framework --count 5
+        """
+    )
     
-    search_term = sys.argv[1]
-    limit = int(sys.argv[2]) if len(sys.argv) > 2 else 15
+    parser.add_argument(
+        'search_terms',
+        nargs='+',
+        help='Search terms (multiple words will be joined with spaces)'
+    )
     
-    print(f"Searching PyPI for: {search_term}")
+    parser.add_argument(
+        '-n', '--count',
+        type=int,
+        default=10,
+        help='Number of results to show (default: 10)'
+    )
+    
+    args = parser.parse_args()
+    
+    # Join multiple search terms with spaces
+    search_term = ' '.join(args.search_terms)
     
     # Search for packages
     packages = search_packages(search_term)
@@ -73,10 +114,7 @@ def main():
         return
     
     # Limit results
-    packages = packages[:limit]
-    
-    print(f"Found {len(packages)} packages:")
-    print()
+    packages = packages[:args.count]
     
     # Get descriptions concurrently for speed
     package_info = {}
@@ -94,14 +132,14 @@ def main():
                 package_info[pkg] = 'No description available'
     
     # Display results
-    for i, pkg in enumerate(packages, 1):
+    for pkg in packages:
         description = package_info.get(pkg, 'No description available')
         
         # Mark exact matches
         if pkg.lower() == search_term.lower():
-            print(f"{i:2d}. {pkg} * - {description}")
+            print(f"{pkg} * - {description}")
         else:
-            print(f"{i:2d}. {pkg} - {description}")
+            print(f"{pkg} - {description}")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 # pip-search-two
-Search pip from the command-line by scrapin the web interface.
+Search pip from the command-line by scraping the web interface.
+
+Avoids pretty TUI-ism. This is a CLI tool that you can pipe into other tools.
 
 
 ## Motivation
@@ -11,4 +13,14 @@ So... I do not want to interact with the PyPI website when they advertise to me 
 Will I maintain this. Will it rot. Who knows. I do however code python daily so there is a chance.
 
 
+## Installation
 
+```
+pipx install pip-search-two
+```
+
+## Usage
+
+```
+pip-search-two hellog world
+```
